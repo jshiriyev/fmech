@@ -4,6 +4,8 @@ from dataclasses import dataclass
 class Dynamic:
 	"""PRODUCTION-INJECTION-INFLUX PARAMETERS
 
+	Id  	: step index at which all the parameters below are defined,
+
 	Np 		: Cumulative oil produced, STB
 	Gp		: Cumulative gas produced, scf
 	Wp		: Cumulative water produced, bbl
@@ -13,9 +15,11 @@ class Dynamic:
 	Ginj	: Cumulative gas injected, scf
 	Winj	: Cumulative water injected, STB
 
-	step 	: time step at which all the parameters above are defined,
+	We		: Cumulative water influx, bbl
 
 	"""
+
+	Id  	: int = None
 
 	Np 		: float = None
 	Gp 		: float = None
@@ -24,7 +28,7 @@ class Dynamic:
 	Ginj 	: float = 0.
 	Winj 	: float = 0.
 
-	step 	: float = None
+	We 		: float = None
 
 	@property
 	def Rp(self):
