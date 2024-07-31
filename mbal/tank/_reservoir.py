@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 
 @dataclass
-class ResProp:
-	"""RESERVOIR ROCK & FLUID PROPERTY CALCULATION METHODS
+class Reservoir:
+	"""
+	RESERVOIR ROCK & FLUID PROPERTIES
 
 	Bo		: Oil formation volume factor, bbl/STB
 	Bw 		: Water formation volume factor, bbl/STB
@@ -13,8 +14,13 @@ class ResProp:
 
 	Rs		: Gas solubility, scf/STB
 
-	Pb		: Bubble point pressure, psi
-
 	"""
 
-	Pb 		: float = None
+	Bo 		: float = 1.
+	Bw 		: float = 1.
+	Bg		: float = None
+
+	cw 		: float = 1e-6
+	cf 		: float = 1e-6
+
+	Rs 		: float = None

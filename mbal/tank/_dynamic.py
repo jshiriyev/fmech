@@ -1,10 +1,10 @@
+import numpy
+
 from dataclasses import dataclass
 
 @dataclass
 class Dynamic:
 	"""PRODUCTION-INJECTION-INFLUX PARAMETERS
-
-	Id  	: step index at which all the parameters below are defined,
 
 	Np 		: Cumulative oil produced, STB
 	Gp		: Cumulative gas produced, scf
@@ -19,18 +19,16 @@ class Dynamic:
 
 	"""
 
-	Id  	: int = None
-
-	Np 		: float = None
-	Gp 		: float = None
-	Wp 		: float = None
+	Np 		: float = 0.
+	Gp 		: float = 0.
+	Wp 		: float = 0.
 
 	Ginj 	: float = 0.
 	Winj 	: float = 0.
 
-	We 		: float = None
+	We 		: float = 0.
 
 	@property
 	def Rp(self):
-		return self.Gp/self.Np
+		return numpy.nan if self.Np==0 else self.Gp/self.Np
 	
