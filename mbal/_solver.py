@@ -1,12 +1,11 @@
-# from _resprop import ResProp
-# from _dynamic import Dynamic
+from .tank._tank import Tank
 
 class Solver():
 
-	def __init__(self,**kwargs):
-		"""resoialization of the solver"""
-		pass
-		# self.reso = ResProp(**kwargs)
+	def __init__(self,*args):
+		"""Initialization of the solver with the tanks."""
+
+		self.tanks = list(args)
 
 	# def __call__(self,res:ResProp,dyn:Dynamic):
 

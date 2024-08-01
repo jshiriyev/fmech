@@ -1,38 +1,58 @@
-from ._state import State
+import copy
 
 from ._reservoir import Reservoir
 
-from ._dynamic import Dynamic
+from ._phase import Phase
 
-class MBTank(State):
+from ._operation import Operation
 
-	def __init__(self,state:dict=None,reservoir:dict=None,dynamic:dict=None):
+class Model():
+
+	def __init__(self,**kwargs):
 		"""Initialization of Material Balance Tank Model."""
 
-		if state is None:
-			super().__init__()
-		else:
-			super().__init__(**state)
+		self._reservoir = Reservoir(**Reservoir.get(**kwargs))
 
-		self._res = Reservoir() if reservoir is None else Reservoir(**reservoir)
+		self._phase = Phase(**Phase.get(**kwargs))
 
-		self._dyn = Dynamic() if dynamic is None else Dynamic(**dynamic)
+		self._operation = Operation(**Operation.get(**kwargs))
+
+	def __call__(self,**kwargs):
+		"""Updating altered Material Balance Tank Model properties."""
+
+		new = copy.deepcopy(self)
+
+		for key,value in kwargs.items():
+
+			if key in self.reservoir.__dict__:
+				setattr(new.reservoir,key,value)
+			elif key in self.phase.__dict__:
+				setattr(new.phase,key,value)
+			elif key in self.operation.__dict__:
+				setattr(new.operation,key,value)
+			else:
+				print(f"Warning: Key '{key}' not found in any sub-class properties.")
+
+		return new
 
 	@property
-	def res(self):
-		return self._res
+	def reservoir(self):
+		return self._reservoir
 
 	@property
-	def dyn(self):
-		return self._dyn
+	def phase(self):
+		return self._phase
 
 	@property
-	def M(self):
-		"""Ratio of gas-cap-gas reservoir volume to
-		reservoir oil volume, bbl/bbl"""
-		return self.G*self.res.Bg/(self.N*self.res.Bo)
+	def operation(self):
+		return self._operation
 
 	@property
-	def PV(self):
+	def gcg2oil(self):
+		"""Ratio of gas-cap-gas reservoir volume to reservoir oil volume, bbl/bbl"""
+		return (self.reservoir.G*self.phase.Bg)/(self.reservoir.N*self.phase.Bo)
+
+	@property
+	def porevolume(self):
 		"""Pore volume, bbl"""
-		return self.N*self.res.Bo*(1+self.M)/(1-self.Sw)
+		return (self.reservoir.N*self.phase.Bo)*(1+self.gcg2oil)/(1-self.reservoir.Sw)
