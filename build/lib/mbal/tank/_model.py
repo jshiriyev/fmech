@@ -46,13 +46,3 @@ class Model():
 	@property
 	def operation(self):
 		return self._operation
-
-	@property
-	def gcg2oil(self):
-		"""Ratio of gas-cap-gas reservoir volume to reservoir oil volume, bbl/bbl"""
-		return (self.reservoir.G*self.phase.Bg)/(self.reservoir.N*self.phase.Bo)
-
-	@property
-	def porevolume(self):
-		"""Pore volume, bbl"""
-		return (self.reservoir.N*self.phase.Bo)*(1+self.gcg2oil)/(1-self.reservoir.Sw)

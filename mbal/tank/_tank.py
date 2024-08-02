@@ -1,4 +1,8 @@
+import numpy
+
 from ._model import Model
+
+from ._cruncher import Cruncher
 
 class Tank(list):
 
@@ -25,21 +29,35 @@ class Tank(list):
 		super().insert(index,self[index-1](**kwargs))
 
 	@property
+	def original(self):
+		return self[0]
+	
+	@property
+	def M(self):
+		"""Ratio of gas-cap-gas reservoir volume to reservoir oil volume, bbl/bbl"""
+		return Cruncher.M(self.original)
+
+	@property
+	def PV(self):
+		"""Total pore volume, bbl"""
+		return Cruncher.PV(self.original)
+	
+	@property
 	def DDI(self):
-		"""depletion drive index"""
-		return self.reso.N*(self.Bt-self.reso.Bo)/self.A
+		"""Depletion drive index"""
+		return [Cruncher.DDI(self.original,model) for model in self]
 
 	@property
 	def SDI(self):
-		"""segregation (gas-cap) drive index"""
-		return self.reso.N*self.reso.M*self.reso.Bo*self.DBg/(self.reso.Bg*self.A)
+		"""Segregation (gas-cap) drive index"""
+		return [Cruncher.SDI(self.original,model) for model in self]
 
 	@property
 	def WDI(self):
-		"""water drive index"""
-		return (self.res.We-self.dyn.Wp*self.res.Bw)/self.A
+		"""Water drive index"""
+		return [Cruncher.WDI(self.original,model) for model in self]
 
 	@property
 	def EDI(self):
-		"""expansion (rock and liquid) depletion drive"""
-		return self.reso.N*self.reso.Bo*(1+self.reso.M)*self.BP*self.Dp/self.A
+		"""Expansion (rock and liquid) depletion drive"""
+		return [Cruncher.EDI(self.original,model) for model in self]

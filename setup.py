@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
 	name = 'mbal',
-	version = '0.0.15',
+	version = '0.0.16',
 	packages = find_packages(),
 	install_requires = [
 		'numpy>=1.26.4',

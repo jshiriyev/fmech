@@ -8,6 +8,7 @@ mbal.egg-info/dependency_links.txt
 mbal.egg-info/requires.txt
 mbal.egg-info/top_level.txt
 mbal/tank/__init__.py
+mbal/tank/_cruncher.py
 mbal/tank/_model.py
 mbal/tank/_operation.py
 mbal/tank/_phase.py

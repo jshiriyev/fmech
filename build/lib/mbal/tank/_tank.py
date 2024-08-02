@@ -1,4 +1,8 @@
+import numpy
+
 from ._model import Model
+
+from ._cruncher import Cruncher
 
 class Tank(list):
 
@@ -23,3 +27,37 @@ class Tank(list):
 			raise IndexError("Insert cannot initialize the tank.")
 
 		super().insert(index,self[index-1](**kwargs))
+
+	@property
+	def original(self):
+		return self[0]
+
+	@property
+	def M(self):
+		"""Ratio of gas-cap-gas reservoir volume to reservoir oil volume, bbl/bbl"""
+		return Cruncher.M(self.original)
+
+	@property
+	def PV(self):
+		"""Total pore volume, bbl"""
+		return Cruncher.PV(self.original)
+	
+	@property
+	def DDI(self):
+		"""Depletion drive index"""
+		return [Cruncher.DDI(self.original,model) for model in self]
+
+	@property
+	def SDI(self):
+		"""Segregation (gas-cap) drive index"""
+		return [Cruncher.SDI(self.original,model) for model in self]
+
+	@property
+	def WDI(self):
+		"""Water drive index"""
+		return [Cruncher.WDI(self.original,model) for model in self]
+
+	@property
+	def EDI(self):
+		"""Expansion (rock and liquid) depletion drive"""
+		return [Cruncher.EDI(self.original,model) for model in self]
