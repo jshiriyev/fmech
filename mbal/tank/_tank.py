@@ -28,6 +28,26 @@ class Tank(list):
 
 		super().insert(index,self[index-1](**kwargs))
 
+	def optimize(tank,index,**kwargs):
+
+		for key,value in kwargs.items():
+			break
+
+		def objective(value,key,index):
+
+			tank[index] = tank[index](**{key:value[0].tolist()})
+
+			tank[index].reservoir.G = 0.2*value[0].tolist()*tank[index].phase.Bo/tank[index].phase.Bg
+
+			return (tank.DDI[1]+tank.SDI[1]+tank.WDI[1]-1)**2
+
+		sol = minimize(objective,value,args=(key,index),tol=1e-5,method="Powell")
+
+		# if sol.success:
+		# 	setattr(tank.original,key,sol.x[0])
+	    
+		return tank	# tank = optimize(tank,0,N=1000_000)
+
 	@property
 	def original(self):
 		return self[0]
@@ -41,7 +61,7 @@ class Tank(list):
 	def PV(self):
 		"""Total pore volume, bbl"""
 		return Cruncher.PV(self.original)
-	
+
 	@property
 	def DDI(self):
 		"""Depletion drive index"""
