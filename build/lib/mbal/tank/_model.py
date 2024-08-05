@@ -17,23 +17,25 @@ class Model():
 
 		self._operation = Operation(**Operation.get(**kwargs))
 
-	def __call__(self,**kwargs):
-		"""Updating altered Material Balance Tank Model properties."""
+	def __call__(self,inplace=False,**kwargs):
+		"""Updating Material Balance Tank Model properties."""
 
-		new = copy.deepcopy(self)
+		if not inplace:
+			self = copy.deepcopy(self)
 
 		for key,value in kwargs.items():
 
 			if key in self.reservoir.__dict__:
-				setattr(new.reservoir,key,value)
+				setattr(self.reservoir,key,value)
 			elif key in self.phase.__dict__:
-				setattr(new.phase,key,value)
+				setattr(self.phase,key,value)
 			elif key in self.operation.__dict__:
-				setattr(new.operation,key,value)
+				setattr(self.operation,key,value)
 			else:
 				print(f"Warning: Key '{key}' not found in any sub-class properties.")
 
-		return new
+		if not inplace:
+			return self
 
 	@property
 	def reservoir(self):

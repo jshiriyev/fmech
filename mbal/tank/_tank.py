@@ -1,5 +1,7 @@
 import numpy
 
+from scipy.optimize import minimize
+
 from ._model import Model
 
 from ._cruncher import Cruncher
@@ -28,25 +30,40 @@ class Tank(list):
 
 		super().insert(index,self[index-1](**kwargs))
 
-	def optimize(tank,index,**kwargs):
+	def minimize(self,drive_index=None,alter_initial=False,minimize_dict:dict=None,**kwargs):
+		"""
+		Minimizes the difference between total drive index and 1 for the given drive_index model.
 
-		for key,value in kwargs.items():
-			break
+		drive_index 	: the model index that is used to calculate total drive index.
 
-		def objective(value,key,index):
+		alter_initial 	: the model index whose parameters will be altered.
 
-			tank[index] = tank[index](**{key:value[0].tolist()})
+		Returns the OptimizeResult where the x includes the optimized values of kwargs keys.
+		"""
 
-			tank[index].reservoir.G = 0.2*value[0].tolist()*tank[index].phase.Bo/tank[index].phase.Bg
+		prime_model = self[0]()
 
-			return (tank.DDI[1]+tank.SDI[1]+tank.WDI[1]-1)**2
+		drive_model = self[-1]() if drive_index is None else self[drive_index]()
 
-		sol = minimize(objective,value,args=(key,index),tol=1e-5,method="Powell")
+		keys,values = list(kwargs.keys()),list(kwargs.values())
 
-		# if sol.success:
-		# 	setattr(tank.original,key,sol.x[0])
-	    
-		return tank	# tank = optimize(tank,0,N=1000_000)
+		def objective(values,keys):
+
+			if alter_initial:
+				prime_model = prime_model(**dict(zip(keys,values)))
+			else:
+				drive_model = drive_model(**dict(zip(keys,values)))
+
+			# prime_model.reservoir.G = 0.2*value[0].tolist()*prime_model.phase.Bo/prime_model.phase.Bg
+
+			ddi = self.safe_drive_index(prime_model,drive_model,"DDI")
+			sdi = self.safe_drive_index(prime_model,drive_model,"SDI")
+			wdi = self.safe_drive_index(prime_model,drive_model,"WDI")
+			edi = self.safe_drive_index(prime_model,drive_model,"EDI")
+
+			return (ddi+sdi+wdi+edi-1)**2
+
+		return minimize(objective,values,args=(keys,),**minimize_dict) # minimize(tank,0,N=1000_000)
 
 	@property
 	def original(self):
@@ -61,6 +78,14 @@ class Tank(list):
 	def PV(self):
 		"""Total pore volume, bbl"""
 		return Cruncher.PV(self.original)
+
+	@staticmethod
+	def safe_drive_index(initial,model,method="DDI"):
+		"""Safely calculates the drive index, if error, returns 0"""
+		try:
+			return getattr(Cruncher,method)(initial,model)
+		except:
+			return 0
 
 	@property
 	def DDI(self):
