@@ -13,6 +13,8 @@ class Operation:
 	Ginj	: Cumulative gas injected, scf
 	Winj	: Cumulative water injected, STB
 
+	GOR		: Instantaneous gas-oil ratio, scf/STB
+
 	Calculated property:
 
 	Rp		: Cumulative gas-oil ratio, scf/STB
@@ -25,6 +27,8 @@ class Operation:
 
 	Ginj 	: float = 0.
 	Winj 	: float = 0.
+
+	GOR 	: float = None
 
 	@property
 	def Rp(self):

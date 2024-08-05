@@ -12,8 +12,6 @@ class Reservoir:
 	N 		: Oil in place, STB
 	G		: Gas-cap gas, scf
 
-	GOR		: Instantaneous gas-oil ratio, scf/STB
-
 	We		: Cumulative water influx, bbl
 
 	"""
@@ -23,8 +21,6 @@ class Reservoir:
 
 	N 		: float = None
 	G 		: float = None
-
-	GOR 	: float = None
 
 	We 		: float = 0.
 

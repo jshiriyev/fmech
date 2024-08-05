@@ -49,12 +49,14 @@ class Tank(list):
 
 		def objective(values,keys):
 
-			if alter_initial:
-				prime_model = prime_model(**dict(zip(keys,values)))
-			else:
-				drive_model = drive_model(**dict(zip(keys,values)))
+			locdict = dict(zip(keys,values))
 
-			# prime_model.reservoir.G = 0.2*value[0].tolist()*prime_model.phase.Bo/prime_model.phase.Bg
+			if alter_initial:
+				prime_model = prime_model(**locdict)
+			else:
+				drive_model = drive_model(**locdict)
+
+			# prime_model.reservoir.G = 
 
 			ddi = self.safe_drive_index(prime_model,drive_model,"DDI")
 			sdi = self.safe_drive_index(prime_model,drive_model,"SDI")
